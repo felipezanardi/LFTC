@@ -1,0 +1,96 @@
+:root {
+  --bg-color: #e8f5e9;
+  --border-color: #a5d6a7;
+  --primary-color: #66bb6a;
+  --text-color: #020202;
+  --card-bg: #ffffff;
+  --placeholder-color: #81c784;
+  --error-color: #e53835c0;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family:
+    ui-monospace, "SF Mono", "Cascadia Code", Monaco, Consolas, monospace;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+}
+
+.container {
+  background-color: var(--card-bg);
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  width: 100%;
+  max-width: 560px;
+  padding: 32px;
+}
+
+h1 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 24px;
+  text-align: center;
+  letter-spacing: -0.5px;
+}
+
+.field-group {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field-group:last-of-type {
+  margin-bottom: 0;
+}
+
+label {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 12px 14px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: var(--text-color);
+  background-color: var(--card-bg);
+  border: 1.5px solid var(--border-color);
+  border-radius: 6px;
+  outline: none;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
+}
+
+input[type="text"]:focus {
+  border-color: var(--primary-color);
+}
+
+input[type="text"]::placeholder {
+  color: var(--placeholder-color);
+  opacity: 0.8;
+}
+
+/* Estados de validacao dos campos de teste */
+
+.test-input.valid {
+  border-color: var(--primary-color);
+  background-color: var(--primary-color);
+}
+
+.test-input.invalid {
+  border-color: var(--error-color);
+  background-color: var(--error-color);
+}
