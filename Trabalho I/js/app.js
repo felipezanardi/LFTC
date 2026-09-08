@@ -1,4 +1,5 @@
 const regexInput = document.getElementById("regex");
+const caseInsensitive = document.getElementById("caseInsensitive");
 const testInput1 = document.getElementById("test1");
 const testInput2 = document.getElementById("test2");
 
@@ -11,9 +12,11 @@ function validate() {
     return;
   }
 
+  const flags = caseInsensitive.checked ? "i" : "";
+
   let regex;
   try {
-    regex = new RegExp(pattern);
+    regex = new RegExp(pattern, flags);
   } catch (e) {
     clearStatus(testInput1);
     clearStatus(testInput2);
@@ -46,5 +49,6 @@ function clearStatus(input) {
 }
 
 regexInput.addEventListener("input", validate);
+caseInsensitive.addEventListener("change", validate);
 testInput1.addEventListener("input", validate);
 testInput2.addEventListener("input", validate);
