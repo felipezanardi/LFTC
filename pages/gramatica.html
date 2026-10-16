@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simulador de Gramática Regular</title>
+    <link rel="stylesheet" href="../css/style.css" />
+  </head>
+  <body>
+    <nav class="top-nav" aria-label="Navegação principal">
+      <a href="index.html" class="nav-link">Expressão Regular</a>
+      <a href="gramatica.html" class="nav-link active">Gramática Regular</a>
+    </nav>
+
+    <main class="container">
+      <h1>Simulador de Gramática Regular</h1>
+
+      <div class="field-group">
+        <label>Regras de produção (GLD)</label>
+        <div id="rulesContainer" class="rules-container">
+          <div class="rule-row">
+            <input
+              type="text"
+              class="rule-left"
+              maxlength="3"
+              value="S"
+              placeholder="S"
+              aria-label="Não-terminal de origem"
+            />
+            <span class="rule-arrow">&rarr;</span>
+            <div class="rule-alternatives">
+              <input
+                type="text"
+                class="alt-input"
+                placeholder="&epsilon;"
+                aria-label="Produção alternativa"
+              />
+            </div>
+            <button
+              type="button"
+              class="btn-add-alt"
+              title="Adicionar alternativa (|)"
+              aria-label="Adicionar alternativa"
+            >
+              +|
+            </button>
+            <button
+              type="button"
+              class="btn-remove"
+              title="Remover regra"
+              aria-label="Remover regra"
+              disabled
+            >
+              &times;
+            </button>
+          </div>
+        </div>
+        <button type="button" id="btnAddRule" class="btn-secondary">
+          + Adicionar regra
+        </button>
+      </div>
+
+      <div class="field-group">
+        <label for="test1">Teste 1</label>
+        <input type="text" id="test1" class="test-input" />
+      </div>
+
+      <div class="field-group">
+        <label for="test2">Teste 2</label>
+        <input type="text" id="test2" class="test-input" />
+      </div>
+    </main>
+
+    <script src="../js/gramatica-algoritmo.js"></script>
+    <script src="../js/gramatica.js"></script>
+  </body>
+</html>
+
