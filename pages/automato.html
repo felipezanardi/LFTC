@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simulador de Autômato Finito</title>
+    <link rel="stylesheet" href="../css/style.css" />
+  </head>
+  <body>
+    <nav class="top-nav" aria-label="Navegação principal">
+      <a href="../index.html" class="nav-link">Expressão Regular</a>
+      <a href="gramatica.html" class="nav-link">Gramática Regular</a>
+      <a href="automato.html" class="nav-link active">Autômato Finito</a>
+    </nav>
+
+    <main class="container container-wide">
+      <h1>Simulador de Autômato Finito</h1>
+
+      <div class="automaton-toolbar">
+        <div class="toolbar-group" role="group" aria-label="Tipo de autômato">
+          <button type="button" class="mode-btn active" data-mode="AFD">
+            AFD
+          </button>
+          <button type="button" class="mode-btn" data-mode="AFND">
+            AFND
+          </button>
+        </div>
+
+        <div class="toolbar-group" role="group" aria-label="Ferramentas de edição">
+          <button type="button" class="tool-btn active" data-tool="select">
+            Selecionar
+          </button>
+          <button type="button" class="tool-btn" data-tool="add-state">
+            + Estado
+          </button>
+          <button type="button" class="tool-btn" data-tool="add-transition">
+            + Transição
+          </button>
+          <button type="button" class="tool-btn" data-tool="delete">
+            Remover
+          </button>
+        </div>
+
+        <div class="toolbar-group">
+          <select
+            id="presetSelect"
+            class="toolbar-select"
+            aria-label="Carregar exemplo"
+          >
+            <option value="">Exemplos...</option>
+            <option value="afd_ab">AFD: termina com 'ab'</option>
+            <option value="afnd_01">AFND: contém '01' (com ε)</option>
+          </select>
+          <button type="button" id="btnClear" class="btn-small">Limpar</button>
+        </div>
+      </div>
+
+      <div id="validationBanner" class="validation-banner" hidden></div>
+
+      <div class="canvas-wrapper">
+        <svg
+          id="automatonSvg"
+          viewBox="0 0 880 340"
+          role="img"
+          aria-label="Diagrama de estados do autômato finito"
+        >
+          <defs>
+            <pattern
+              id="dotGrid"
+              width="24"
+              height="24"
+              patternUnits="userSpaceOnUse"
+            >
+              <circle cx="12" cy="12" r="1.35" fill="#9ccc9f" />
+            </pattern>
+            <marker
+              id="arrow"
+              viewBox="0 0 10 10"
+              refX="9"
+              refY="5"
+              markerWidth="7"
+              markerHeight="7"
+              orient="auto-start-reverse"
+            >
+              <path d="M 0 1 L 10 5 L 0 9 z" fill="#374151" />
+            </marker>
+            <marker
+              id="arrow-selected"
+              viewBox="0 0 10 10"
+              refX="9"
+              refY="5"
+              markerWidth="7"
+              markerHeight="7"
+              orient="auto-start-reverse"
+            >
+              <path d="M 0 1 L 10 5 L 0 9 z" fill="#1b5e20" />
+            </marker>
+            <marker
+              id="arrow-active"
+              viewBox="0 0 10 10"
+              refX="9"
+              refY="5"
+              markerWidth="7"
+              markerHeight="7"
+              orient="auto-start-reverse"
+            >
+              <path d="M 0 1 L 10 5 L 0 9 z" fill="#66bb6a" />
+            </marker>
+          </defs>
+          <rect
+            id="gridBg"
+            x="0"
+            y="0"
+            width="880"
+            height="340"
+            fill="url(#dotGrid)"
+          />
+          <g id="viewportLayer">
+            <g id="transitionsLayer"></g>
+            <g id="statesLayer"></g>
+          </g>
+        </svg>
+      </div>
+
+      <p class="canvas-hint" id="canvasHint">
+        Duplo clique no espaço vazio cria um estado. Clique em um estado ou transição para editar.
+      </p>
+
+      <div id="inspectorPanel" class="inspector-panel" hidden>
+        <div id="stateInspector" class="inspector-row" hidden>
+          <label class="inspector-field">
+            Estado:
+            <input type="text" id="stateLabelInput" maxlength="6" />
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" id="stateInitialCheck" />
+            Inicial
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" id="stateFinalCheck" />
+            Final
+          </label>
+          <div class="inspector-actions">
+            <button
+              type="button"
+              id="btnDeleteState"
+              class="btn-danger-outline"
+            >
+              Remover estado
+            </button>
+          </div>
+        </div>
+
+        <div id="transitionInspector" class="inspector-row" hidden>
+          <span class="inspector-field" id="transitionEndpoints"></span>
+          <label class="inspector-field">
+            Símbolos:
+            <input
+              type="text"
+              id="transitionSymbolsInput"
+              class="symbols-input"
+              placeholder="a, b"
+            />
+          </label>
+          <button
+            type="button"
+            id="btnInsertEpsilon"
+            class="btn-small"
+            title="Inserir transição vazia (ε)"
+          >
+            + ε
+          </button>
+          <div class="inspector-actions">
+            <button
+              type="button"
+              id="btnDeleteTransition"
+              class="btn-danger-outline"
+            >
+              Remover transição
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <section class="sim-grid" aria-label="Simulação de entradas">
+        <div class="sim-section">
+          <h2>Simulação passo a passo</h2>
+          <div class="field-group">
+            <label for="singleWordInput">Entrada única</label>
+            <input
+              type="text"
+              id="singleWordInput"
+              placeholder="Digite uma palavra (ou deixe vazio para ε)"
+            />
+          </div>
+
+          <div id="tapeDisplay" class="tape-display" aria-label="Fita de entrada"></div>
+
+          <div class="step-controls">
+            <button type="button" id="btnStepReset" class="btn-small">
+              Reiniciar
+            </button>
+            <button type="button" id="btnStepPrev" class="btn-small">
+              Voltar
+            </button>
+            <button type="button" id="btnStepNext" class="btn-small">
+              Avançar
+            </button>
+            <button type="button" id="btnStepAll" class="btn-small">
+              Executar tudo
+            </button>
+          </div>
+
+          <div id="simStatus" class="sim-status"></div>
+        </div>
+
+        <div class="sim-section">
+          <h2>Múltiplas entradas</h2>
+          <div id="batchList" class="batch-list"></div>
+          <button type="button" id="btnAddBatch" class="btn-secondary">
+            + Adicionar entrada
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <script src="../js/automato-algoritmo.js"></script>
+    <script src="../js/automato.js"></script>
+  </body>
+</html>
+
